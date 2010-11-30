@@ -1,11 +1,13 @@
 import logging
 
+from zope.i18n import translate
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five import BrowserView
 
 logger = logging.getLogger('collective.multimodeview')
 
-class MultiModeMixin(object):
+class MultiModeMixin(BrowserView):
     """ Do not use this view, use MultiModeView or MultiModeViewlet below.
     """
     
@@ -108,7 +110,7 @@ class MultiModeMixin(object):
                 # a infinite loop and that's not a good thing.
                 return self.make_link(mode)
 
-        return super(MultiModeView, self).__getattribute__(name)
+        return super(MultiModeMixin, self).__getattribute__(name)
 
     def make_link(self, mode, extra_params = None):
         """ Returns a link for the asked mode.
@@ -141,12 +143,13 @@ class MultiModeMixin(object):
         if options is None:
             options = {}
 
-        template = ZopeTwoPageTemplateFile('templates/form_extras.pt')
-        options = {'mode': self.mode}
+        self.fake_template = ZopeTwoPageTemplateFile('templates/form_extras.pt')
+        options['mode'] = self.mode
         if isinstance(self.modes, dict):
             options['submit_label'] = self.modes[self.mode].get('submit_label')
 
-        return template(**options)
+        print options
+        return self.fake_template(**options)
 
     @property
     def portal_url(self):
@@ -157,7 +160,7 @@ class MultiModeMixin(object):
     def get_base_url(self):
         """ The url of the page.
         """
-        return '%s/%s' % (self.context.absolute_url,
+        return '%s/%s' % (self.context.absolute_url(),
                           self.view_name)
 
     def get_form_action(self):
@@ -197,6 +200,19 @@ class MultiModeMixin(object):
 
         mtool = self.get_mtool()
         return mtool.checkPermission(self.view_permission)
+
+    def addPortalMessage(self, msg, type='info'):
+        """ Translates the message and displays it as a
+        portal message.
+        """
+        translated = translate(msg, context=self.request)
+        self.context.plone_utils.addPortalMessage(translated,
+                                                  type)
+
+    def class_for_field(self, field):
+        if field in self.errors:
+            return 'field error'
+        return 'field'
 
     def check_form(self):
         """ This function is called when a form is submitted.

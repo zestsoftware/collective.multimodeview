@@ -1,9 +1,6 @@
-from Products.Five import BrowserView
-
 from collective.multimodeview.browser.base import MultiModeMixin
 
-
-class MultiModeViewlet(MultiModeMixin, BrowserView):
+class MultiModeViewlet(MultiModeMixin):
     """ This class should be inherited by viewlets using
     multi-mode.
     """
@@ -46,7 +43,7 @@ class MultiModeViewlet(MultiModeMixin, BrowserView):
             self.mode = self.default_mode
 
     def get_base_url(self):
-        return '%s/%s' % (self.context.absolute_url,
+        return '%s/%s' % (self.context.absolute_url(),
                           self.view.__name__)
 
     def get_form_action(self):
