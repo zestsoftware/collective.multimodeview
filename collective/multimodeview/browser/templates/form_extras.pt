@@ -1,0 +1,23 @@
+<input type="hidden"
+       name="mode"
+       tal:attributes="value options/mode" />
+
+<input type="hidden"
+       name="widget_id"
+       tal:condition="options/widget_id|nothing"
+       tal:attributes="value options/widget_id" />
+
+<tal:block tal:condition="options/submit_label|nothing">
+  <input type="submit"
+         name="form_submitted"
+         class="context allowMultiSubmit"
+         tal:attributes="value options/submit_label" />
+
+  <input type="submit"
+         name="form_cancelled"
+         value="Cancel"
+         class="context allowMultiSubmit pyproxyIgnore"
+         i18n:domain="plone"
+         i18n:attributes="value label_cancel;"/>
+</tal:block>
+       
