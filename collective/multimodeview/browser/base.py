@@ -188,6 +188,24 @@ class MultiModeMixin(BrowserView):
         return self.get_mtool().checkPermission(permission,
                                                 context)
 
+    def object_from_uid(self, uid):
+        """ Shortcut to use the uid_catalog.
+        Return the first (and hopefully only) having this
+        UID or None.
+        """
+        uid_cat = getToolByName(self.context,
+                                'uid_catalog')
+        brains = uid_cat(UID = uid)
+        if not brains:
+            logger.info('No object found for UID %s' % uid)
+            return None
+        
+        try:
+            return brains[0].getObject()
+        except:
+            logger.info('Unable to wake up %s' % brains[0])
+            return None
+
     def is_shown(self):
         """ Tells if the user has the permission to see
         the page.
