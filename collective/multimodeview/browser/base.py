@@ -232,6 +232,49 @@ class MultiModeMixin(BrowserView):
             return 'field error'
         return 'field'
 
+    def filter_archetype_form(self, context, schema, fields):
+        """ This can be used when you manage Archetypes objects and use
+        the archetypes macros in the template.
+        This method will use the widgets process_form method to transform
+        content in the form.
+        """
+        form = self.request.form
+        print fields
+        new_form = {}
+        for field in schema.fields():
+            fieldname = field.getName()
+            if not fieldname in fields:
+                continue
+
+            widget = field.widget
+            processed_value = widget.process_form(
+                context, field, form)
+
+            if isinstance(processed_value, tuple):
+                new_form[fieldname] = processed_value[0]
+            else:
+                new_form[fieldname] = processed_value
+                
+        return new_form
+
+    def check_archetype_form(self, form, context, fields):
+        """ uses the schema validators to validate a form.
+        """
+        for field in context.schema.fields():
+            fieldname = field.getName()
+            if not fieldname in fields:
+                continue
+
+            if not field.validators:
+                continue
+
+            field_errors = field.validators(
+                form.get(field),
+                REQUEST=self.request)
+
+            if field_errors != True:
+                self.errors[field] = field_errors
+
     def check_form(self):
         """ This function is called when a form is submitted.
         It returns True in most cases, except when something really
