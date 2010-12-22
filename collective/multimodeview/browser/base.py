@@ -39,6 +39,11 @@ class MultiModeMixin(BrowserView):
     # switching to a non-existing mode.
     default_mode = ''
 
+    # You can define a special mode displayed when the user cancels.
+    # If cancel_mode is not defined, it will use the default_mode
+    # when cancelling.
+    cancel_mode = None
+
     # The permission needed see the view.
     # This can be usefull when you want to include a multimode
     # view in another view and do not want to get 'Unauthorized'
@@ -334,7 +339,7 @@ class MultiModeMixin(BrowserView):
         form = self.request.form
         if 'form_cancelled' in form:
             # User cancelled.
-            self.mode = self.default_mode
+            self.mode = self.cancel_mode or self.default_mode
             self.addPortalMessage(self.cancel_msg)
             return
         
