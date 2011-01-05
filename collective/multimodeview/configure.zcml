@@ -10,5 +10,5 @@
   <!-- If you are using the sources of the product (for example with
   mr.developer, you can uncomment this line to have the samples
   working) -->
-  <!-- <include package=".samples" /> -->
+  <include package=".samples" />
 </configure>

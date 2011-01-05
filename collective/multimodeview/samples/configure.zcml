@@ -21,12 +21,30 @@
       permission="zope2.View"
       />
 
-  <!-- Second sample: playing with forms (but cleaner than the previous one)-->
+  <!-- Second sample: playing with forms (but cleaner than the previous one) -->
   <browser:page
       for="*"
       name="multimodeview_sample21"
       class=".views.Sample21View"
       template="sample21.pt"
+      permission="zope2.View"
+      />
+
+  <!-- Third sample: a form with multiple steps-->
+  <browser:page
+      for="*"
+      name="multimodeview_sample3"
+      class=".views.Sample3View"
+      template="sample3.pt"
+      permission="zope2.View"
+      />
+
+  <!-- Third sample: a form with multiple steps (but better)-->
+  <browser:page
+      for="*"
+      name="multimodeview_sample31"
+      class=".views.Sample31View"
+      template="sample3.pt"
       permission="zope2.View"
       />
 

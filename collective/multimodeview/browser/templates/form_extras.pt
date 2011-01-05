@@ -17,7 +17,15 @@
          name="form_cancelled"
          value="Cancel"
          class="context allowMultiSubmit pyproxyIgnore"
+         tal:condition="not: options/cancel_label|nothing"
          i18n:domain="plone"
          i18n:attributes="value label_cancel;"/>
+
+  <input type="submit"
+         name="form_cancelled"
+         value="Cancel"
+         class="context allowMultiSubmit pyproxyIgnore"
+         tal:condition="options/cancel_label|nothing"
+         tal:attributes="value options/cancel_label" />
 </tal:block>
        

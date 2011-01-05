@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      xml:lang="en"
+      lang="en"
+      i18n:domain="collective.multimodeview">
+  <body>
+    <div metal:fill-slot="main">
+      <form method="POST"
+            tal:attributes="action view/get_form_action">
+        <input type="hidden"
+               name="step1_value"
+               tal:attributes="value view/request/form/step1_value|nothing"
+               tal:condition="not: view/is_step1_mode" />
+
+        <input type="hidden"
+               name="step2_value"
+               tal:attributes="value view/request/form/step2_value|nothing"
+               tal:condition="not: view/is_step2_mode" />
+
+        <input type="hidden"
+               name="step3_value"
+               tal:attributes="value view/request/form/step3_value|nothing"
+               tal:condition="not: view/is_step3_mode" />
+
+        <input type="hidden"
+               name="step4_value"
+               tal:attributes="value view/request/form/step4_value|nothing"
+               tal:condition="not: view/is_step4_mode" />
+
+        <div class="field"
+             tal:condition="view/is_step1_mode">
+          <label for="step1">What is your name?</label>
+          <input type="text"
+                 name="step1_value"
+                 tal:attributes="value view/request/form/step1_value|nothing" />
+        </div>
+
+        <div class="field"
+             tal:condition="view/is_step2_mode">
+          <label for="step1">What is your quest?</label>
+          <input type="text"
+                 name="step2_value"
+                 tal:attributes="value view/request/form/step2_value|nothing" />
+        </div>
+
+        <div class="field"
+             tal:condition="view/is_step3_mode">
+          <label for="step1">What is your favorite color?</label>
+          <input type="text"
+                 name="step3_value"
+                 tal:attributes="value view/request/form/step3_value|nothing" />
+        </div>
+
+        <div class="field"
+             tal:condition="view/is_step4_mode">
+          <label for="step1">What is the air-speed velocity of an unladen swallow?</label>
+          <input type="text"
+                 name="step4_value"
+                 tal:attributes="value view/request/form/step4_value|nothing" />
+        </div>
+
+        <div tal:condition="view/is_step5_mode">
+          <p>Yer answers to the questions were:</p>
+          <ul>
+            <li>What is your name? <span tal:replace="view/request/form/step1_value|nothing" /></li>
+            <li>What is your quest? <span tal:replace="view/request/form/step2_value|nothing" /></li>
+            <li>What is your favorite color? <span tal:replace="view/request/form/step3_value|nothing" /></li>
+            <li>What is the air-speed velocity of an unladen swallow? <span tal:replace="view/request/form/step4_value|nothing" /></li>
+          </ul>
+        </div>
+
+        <span tal:replace="structure view/make_form_extras" />
+      </form>
+    </div>
+  </body>
+</html>

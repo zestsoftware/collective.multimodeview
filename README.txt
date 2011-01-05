@@ -12,8 +12,8 @@ This README will show three simple examples on how to use the
 product. All samples can be found in the sources in the samples
 directory.
 
-Samples
-=======
+Samples of views
+================
 
 Sample 1: a simple view with two states
 ---------------------------------------
@@ -460,3 +460,197 @@ The question you may have now is "Where are my input defined ?". It is
 the view/make_form_extras that creates them. If no label for the
 submit button is found, it will not show any button. If a label is
 found, it automatically generates the two submit buttons.
+
+Sample 3: Creating a multi-step form
+------------------------------------
+
+This last example shows how to handle a form in multiple steps. The
+method used here is not the best one, as we pass the data from one
+page to the other using hidden input. It would be better to use
+session, cookies or even local storage for HTML5 fans, but the goal
+here is more to shown how to navigate from one mode to another.
+
+As usual, we first define the view::
+
+  class Sample3View(MultiModeView):
+      modes = {'step1': {'submit_label': 'Go to step 2'},
+               'step2': {'submit_label': 'Go to step 3'},
+               'step3': {'submit_label': 'Go to step 4'},
+               'step4': {'submit_label': 'Go to step 5'},
+               'step5': {}}
+
+      default_mode = 'step1'
+      view_name = 'multimodeview_sample3'
+
+      def check_form(self):
+          return True
+
+      def _process_step1_form(self):
+          return 'step2'
+
+      def _process_step2_form(self):
+          return 'step3'
+
+      def _process_step3_form(self):
+          return 'step4'
+
+      def _process_step4_form(self):
+          return 'step5'
+
+      def _process_step5_form(self):
+          return 'step5'
+
+      @property
+      def cancel_mode(self):
+          mapping = {'step1': 'step1',
+                     'step2': 'step1',
+                     'step3': 'step2',
+                     'step4': 'step3',
+                     'step5': 'step4'}
+          return mapping.get(self.mode)
+
+
+We have overriden the 'check_form' method so it always returns True
+(we do not really care about the values here).
+The _process_xxx_form methods now returns the step to which the user
+is sent when completing the step. So once the 1st step is done, the
+second one is displayed and so on.
+
+The 'cancel_mode' attribute has been defined has a property, so the
+value can change depending on the current mode used by the view. You
+can also define it has a simple attribute, but in this case it will
+always return to the same mode when cancelling.
+
+Now we can define a simple template for our view::
+
+  <form method="POST"
+        tal:attributes="action view/get_form_action">
+    <input type="hidden"
+           name="step1_value"
+           tal:attributes="value view/request/form/step1_value|nothing"
+           tal:condition="not: view/is_step1_mode" />
+
+    <input type="hidden"
+           name="step2_value"
+           tal:attributes="value view/request/form/step2_value|nothing"
+           tal:condition="not: view/is_step2_mode" />
+
+    <input type="hidden"
+           name="step3_value"
+           tal:attributes="value view/request/form/step3_value|nothing"
+           tal:condition="not: view/is_step3_mode" />
+
+    <input type="hidden"
+           name="step4_value"
+           tal:attributes="value view/request/form/step4_value|nothing"
+           tal:condition="not: view/is_step4_mode" />
+
+    <div class="field"
+         tal:condition="view/is_step1_mode">
+      <label for="step1">What is your name?</label>
+      <input type="text"
+             name="step1_value"
+             tal:attributes="value view/request/form/step1_value|nothing" />
+    </div>
+
+    <div class="field"
+         tal:condition="view/is_step2_mode">
+      <label for="step1">What is your quest?</label>
+      <input type="text"
+             name="step2_value"
+             tal:attributes="value view/request/form/step2_value|nothing" />
+    </div>
+
+    <div class="field"
+         tal:condition="view/is_step3_mode">
+      <label for="step1">What is your favorite color?</label>
+      <input type="text"
+             name="step3_value"
+             tal:attributes="value view/request/form/step3_value|nothing" />
+    </div>
+
+    <div class="field"
+         tal:condition="view/is_step4_mode">
+      <label for="step1">What is the air-speed velocity of an unladen swallow?</label>
+      <input type="text"
+             name="step4_value"
+             tal:attributes="value view/request/form/step4_value|nothing" />
+    </div>
+
+    <div tal:condition="view/is_step5_mode">
+      <p>Yer answers to the questions were:</p>
+      <ul>
+        <li>What is your name? <span tal:replace="view/request/form/step1_value|nothing" /></li>
+        <li>What is your quest? <span tal:replace="view/request/form/step2_value|nothing" /></li>
+        <li>What is your favorite color? <span tal:replace="view/request/form/step3_value|nothing" /></li>
+        <li>What is the air-speed velocity of an unladen swallow? <span tal:replace="view/request/form/step4_value|nothing" /></li>
+      </ul>
+    </div>
+
+    <span tal:replace="structure view/make_form_extras" />
+  </form>
+
+As told previously, this code is far from perfect, but shows how easy
+it is to navigate from one form to the other by returning the next
+mode in '_process_xxx_form' and overriding the 'cancel_mode' property.
+
+But let's make it cleaner (again).
+
+Sample 3.1: Navigating between mode again
+-----------------------------------------
+
+We'll use the same template than for the previous view, but update a
+few things:
+
+ - the cancel message wil differ in each mode.
+
+ - the cancel mode will be defined in the 'modes' dictionnary
+
+ - the next mode to use will also be defined there.
+
+
+As previously, we override the 'check_form' to avoid having to define a
+_check_stepx_form method for each step. We define empty methods to
+process each step::
+
+  class Sample31View(MultiModeView):
+      modes = {'step1': {'submit_label': 'Go to step 2',
+                         'cancel_label': 'Cancel',
+                         'success_mode': 'step2',
+                         'cancel_mode': 'step1',
+                         'cancel_msg': 'You can not go back, mwahaha'}},
+               'step2': {'submit_label': 'Go to step 3',
+                         'cancel_label': 'Back to step 1',
+                         'success_mode': 'step3',
+                         'cancel_mode': 'step1'},
+               'step3': {'submit_label': 'Go to step 4',
+                         'cancel_label': 'Back to step 2',
+                         'success_mode': 'step4',
+                         'cancel_mode': 'step2'},
+               'step4': {'submit_label': 'Go to step 5',
+                         'cancel_label': 'Back to step 3',
+                         'success_mode': 'step5',
+                         'cancel_mode': 'step3'},
+               'step5': {}}
+
+      default_mode = 'step1'
+      view_name = 'multimodeview_sample31'
+
+      def check_form(self):
+          return True
+
+      def _process_step1_form(self):
+          pass
+
+      def _process_step2_form(self):
+          pass
+
+      def _process_step3_form(self):
+          pass
+
+      def _process_step4_form(self):
+          pass
+
+You might have seen that for step1, we also defined a
+'cancel_msg'. This has the same effect than 'success_msg' or
+'error_msg' shown in sample 2.1, except it is shown when the user cancels.
