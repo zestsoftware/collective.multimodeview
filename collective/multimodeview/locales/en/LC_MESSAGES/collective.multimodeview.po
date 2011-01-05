@@ -1,0 +1,36 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2011-01-05 10:47+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: DOMAIN\n"
+
+#. Default: "Changes have been cancelled."
+#: ./browser/base.py:93
+msgid "cancel_msg"
+msgstr ""
+
+#. Default: "Errors have been found in the form you sent. Please correct them."
+#: ./browser/base.py:86
+msgid "error_msg"
+msgstr ""
+
+#. Default: "The form you filled has not ben sent properly, please try again."
+#: ./browser/base.py:72
+msgid "form_error_msg"
+msgstr ""
+
+#. Default: "Changes have been saved."
+#: ./browser/base.py:80
+msgid "success_msg"
+msgstr ""
+

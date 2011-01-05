@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      xml:lang="en"
+      lang="en"
+      i18n:domain="collective.multimodeview">
+  <body>
+    <div metal:fill-slot="main">
+      <div tal:condition="view/is_conditions_mode">
+        <p>By using this site, you agree on the fact that you will
+        not do stupid things.</p>
+
+        <p class="discreet">
+          <a tal:attributes="href view/data_use_link">See how we use your data</a>
+        </p>
+      </div>
+      <div tal:condition="view/is_data_use_mode">
+        <p>We will sell your email to all known spam database, we need money.</p>
+
+        <p class="discreet">
+          <a tal:attributes="href view/conditions_link">See the conditions to use the site</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

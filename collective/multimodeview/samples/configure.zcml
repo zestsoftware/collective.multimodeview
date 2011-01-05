@@ -1,0 +1,33 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="collective.multimodeview">
+
+  <!-- First sample: two states view -->
+  <browser:page
+      for="*"
+      name="multimodeview_sample1"
+      class=".views.Sample1View"
+      template="sample1.pt"
+      permission="zope2.View"
+      />
+
+  <!-- Second sample: playing with forms -->
+  <browser:page
+      for="*"
+      name="multimodeview_sample2"
+      class=".views.Sample2View"
+      template="sample2.pt"
+      permission="zope2.View"
+      />
+
+  <!-- Second sample: playing with forms (but cleaner than the previous one)-->
+  <browser:page
+      for="*"
+      name="multimodeview_sample21"
+      class=".views.Sample21View"
+      template="sample21.pt"
+      permission="zope2.View"
+      />
+
+</configure>

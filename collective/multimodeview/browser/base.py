@@ -5,6 +5,8 @@ from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.Five import BrowserView
 
+from collective.multimodeview import MultiModeViewMessageFactory as _
+
 logger = logging.getLogger('collective.multimodeview')
 
 class MultiModeMixin(BrowserView):
@@ -65,20 +67,33 @@ class MultiModeMixin(BrowserView):
     # The associated values are the list of errors found for the link.
     errors = {}
 
-
     # Message displayed as a portal message when the form submitted was not
     # checkable (see check_form)
-    form_error_msg = ''
+    form_error_msg = _(
+        u'form_error_msg',
+        default=u'The form you filled has not ben sent properly, ' + \
+        'please try again.'
+        )
 
     # Message displayed as a portal message when the form was successfully
     # processed.
-    success_msg = ''
+    success_msg = _(
+        u'success_msg',
+        default=u'Changes have been saved.'
+        )
 
     # Message displayed as a portal message when the form was not valid.
-    error_msg = ''
+    error_msg = _(
+        u'error_msg',
+        default=u'Errors have been found in the form you sent. ' + \
+        'Please correct them.'
+        )
 
     # Message displayed when the user hit the cancel button.
-    cancel_msg = ''
+    cancel_msg = _(
+        u'cancel_msg',
+        default=u'Changes have been cancelled.'
+        )
 
     def __init__(self, context, request):
         self.context = context
@@ -148,12 +163,14 @@ class MultiModeMixin(BrowserView):
         if options is None:
             options = {}
 
+        # We need to define the template as an attribute of the view, if we don't
+        # we can not render it.
         self.fake_template = ZopeTwoPageTemplateFile('templates/form_extras.pt')
+
         options['mode'] = self.mode
         if isinstance(self.modes, dict):
             options['submit_label'] = self.modes[self.mode].get('submit_label')
 
-        print options
         return self.fake_template(**options)
 
     @property
@@ -263,7 +280,7 @@ class MultiModeMixin(BrowserView):
         return new_form
 
     def check_archetype_form(self, form, context, fields):
-        """ uses the schema validators to validate a form.
+        """ Uses the schema validators to validate a form.
         """
         for field in context.schema.fields():
             fieldname = field.getName()
@@ -353,7 +370,8 @@ class MultiModeMixin(BrowserView):
             # submitting the form.
             # This case should not happen normally.
             self.addPortalMessage(self.form_error_msg, 'error')
-            logger.info('Check form returned False - please investigate.')
+            logger.info('Check form returned False - please investigate.' + \
+                        'The form was: \n%s' % form)
         else:
             if self.errors:
                 if isinstance(self.modes, dict):
