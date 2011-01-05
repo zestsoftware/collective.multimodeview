@@ -654,3 +654,20 @@ process each step::
 You might have seen that for step1, we also defined a
 'cancel_msg'. This has the same effect than 'success_msg' or
 'error_msg' shown in sample 2.1, except it is shown when the user cancels.
+
+Samples with viewlets
+=====================
+
+There is currently no samples with the viewlets, for the good reason
+that they work the exact same way than the views, except for two
+points:
+
+ - the class must inherit
+   collective.multimodeview.browser.MultiModeViewlet instead of
+   collective.multimodeview.browser.MultiModeView.
+ - you must define a 'widget_id' attribute for the class, so there is
+   no conflict when processing the form on page that have multiple
+   viewlets defined.
+
+Samples will be added when the automated Ajax version for viewlets
+will be integrated.
