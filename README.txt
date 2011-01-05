@@ -12,14 +12,17 @@ This README will show three simple examples on how to use the
 product. All samples can be found in the sources in the samples
 directory.
 
+Samples
+=======
+
 Sample 1: a simple view with two states
-=======================================
+---------------------------------------
 
 Let's say you want to define a view that displays the conditions to
 use the site  or the engagments you are taking with the data provided
 by the user.
 
-First we need to define the Python view:
+First we need to define the Python view::
 
   from collective.multimodeview.browser import MultiModeView
 
@@ -38,7 +41,7 @@ by default for this page.
 see it after). It is needed to be able to define the base url for the
 page or when using Ajax to fetch the content (mainly for viewlets).
 
-The second step is to define a template for our page:
+The second step is to define a template for our page::
 
   <html xmlns="http://www.w3.org/1999/xhtml"
         xmlns:tal="http://xml.zope.org/namespaces/tal"
@@ -81,7 +84,7 @@ mode. This can be used for any mode, except if you have a mode called
 'make' mode, then you'll have to manually use 'make_link' (that will
 be described later).
 
-Now you can define your view in the zcml file:
+Now you can define your view in the zcml file::
 
   <browser:page
       for="*"
@@ -97,7 +100,7 @@ two modes.
 Now let's go for something a bit more interresting.
 
 Sample 2: playing with forms
-============================
+----------------------------
 
 The first sample was pretty basic and could have been simply done by
 using two pages or browser views.
@@ -106,7 +109,7 @@ will add some annotations on the portal object (basically a simple
 list of string). The view will be able to list, add, edit and delete
 those notes.
 
-As usual, we first define the view.
+As usual, we first define the view::
 
   from zope.app.component.hooks import getSite
   from zope.annotation.interfaces import IAnnotations
@@ -198,7 +201,7 @@ mode once the form is proceeded. By default, it switches to the
 default mode.
 
 The second step is to define the template for this view. We first
-create the div (or whatever else) that is shown by default.
+create the div (or whatever else) that is shown by default::
 
   <div tal:condition="view/is_list_mode">
     <tal:block tal:define="notes view/get_notes;
@@ -254,7 +257,8 @@ want to edit or delete.
 using view.make_link('edit', {'note_id': note_id}) will generate a
 link like this: http://..../multimodeview_sample2?mode=edit&note_id=2.
 
-Now let's complete our template with the form to add a note:
+Now let's complete our template with the form to add a note::
+
   <div tal:condition="not: view/is_list_mode">
     <form name="manage_notes_form"
           method="POST"
@@ -287,25 +291,31 @@ Now let's complete our template with the form to add a note:
 
 In this code we can see a few usefull methods provided by
 multimodeview:
+
  - 'view/get_for_action': provides the action that should be used for
- the form.
+   the form.
+
  - 'view.class_for_field(field)': this methods returns 'field' if
- there is no error found for this field, or 'field error' if an error
- was found. Those class names are the default ones provided by
- Archetype, so an error will appear in red with a default Plone theme.
- - 'view/make_form_extras': this method should be used in every form
- in multimode page. It adds some hidden fields such as the mode
- currently is use.
+   there is no error found for this field, or 'field error' if an error
+   was found. Those class names are the default ones provided by
+   Archetype, so an error will appear in red with a default Plone theme.
+
+ - 'view/make_form_extras': this method should be used in every form 
+   in multimode page. It adds some hidden fields such as the mode
+   currently is use.
 
 We can also see some specificities in the form:
+
  - the method should always be 'POST': if you do not use a 'POST'
- method, the form will not be processed.
+   method, the form will not be processed.
+
  - the submit input to process the form is called 'form_submitted'.
+
  - the sumbit input to cancel is called 'form_cancelled'. If you use
- other names, the forms will not be processed.
+   other names, the form will not be processed.
 
 We can now complete the template to also be able to manage the 'edit'
-and 'delete' modes:
+and 'delete' modes::
 
   <tal:block tal:condition="view/is_edit_mode">
     <div tal:attributes="class python: view.class_for_field('title')">
@@ -351,21 +361,23 @@ Nothing really new in this new code but at least we are now able to
 manage the notes.
 
 Now that the system is complete, we can see some problems incoming:
+
  - there is some repetitions in the template code, mainly for the
- submit buttons. The one to cancel could be factorized but the one to
- process the form has a different name everytime.
+   submit buttons. The one to cancel could be factorized but the one to
+   process the form has a different name everytime.
+
  - the messages always say 'Your changes have been saved', whatever
- you do.
+   you do.
 
 Let's improve this quiclky.
 
 Sample 2.1: using a dictionnary for modes
-=========================================
+-----------------------------------------
 
 The two problems seen before can be quickly fixed when defining a list
 of modes with a dictionnary.
 
-Let's define the new view, inheriting from the prevous one:
+Let's define the new view, inheriting from the prevous one::
 
   class Sample21View(Sample2View):
       """ A view that adds annotations on the portal.
@@ -384,13 +396,16 @@ Let's define the new view, inheriting from the prevous one:
 
 As you can see, for each mode, a dictionnary is provided with three
 values:
+
  - success_msg: the message displayed when the form is successfuly
- processed.
+   processed.
+
  - error_msg: the message shown when errors are found in the form.
+ 
  - submit_label: the title for the button to submit the form.
 
 Now we can also update our template. The part for listing the notes
-does not change, we only update the form:
+does not change, we only update the form::
 
   <form name="manage_notes_form"
         method="POST"
