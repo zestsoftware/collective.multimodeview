@@ -1,0 +1,9 @@
+Changelog
+=========
+
+1.0dev (unreleased)
+-------------------
+
+- added samples + README. [vincent]
+
+- extracted code from Products.plonehrm. [vincent]
