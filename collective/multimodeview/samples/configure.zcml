@@ -48,4 +48,12 @@
       permission="zope2.View"
       />
 
+  <!-- An external view to factorize some code. It provides the API
+  used in sample 2 -->
+  <browser:page
+      for="*"
+      name="multimodeview_notes_sample"
+      class=".notes_view.NotesView"
+      permission="zope2.View"
+      />
 </configure>

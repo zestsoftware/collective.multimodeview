@@ -9,11 +9,6 @@ class Sample1View(MultiModeView):
     view_name = 'multimodeview_sample1'
 
 
-from zope.app.component.hooks import getSite
-from zope.annotation.interfaces import IAnnotations
-from persistent.dict import PersistentDict
-from persistent.list import PersistentList
-
 class Sample2View(MultiModeView):
     """ A view that adds annotations on the portal.
     """
@@ -24,37 +19,12 @@ class Sample2View(MultiModeView):
     default_mode = 'list'
     view_name = 'multimodeview_sample2'
 
-    def get_notes(self):
-        anno_key = 'multimodeview_sample2'
-        portal = getSite()
-
-        annotations = IAnnotations(portal)
-        metadata = annotations.get(anno_key, None)
-        if metadata is None:
-            annotations[anno_key] = PersistentDict()
-            metadata = annotations[anno_key]
-
-        notes = metadata.get('notes', None)
-        if notes is None:
-            metadata['notes'] = PersistentList()
-            notes = metadata['notes']
-
-        return notes
-
-    def add_note(self, title):
-        notes = self.get_notes()
-        notes.append(title)
-
-    def edit_note(self, note_id, title):
-        notes = self.get_notes()
-        notes[note_id] = title
-
-    def delete_note(self, note_id):
-        notes = self.get_notes()
-        notes[note_id] = None
+    @property
+    def notes_view(self):
+        return self.context.restrictedTraverse('@@multimodeview_notes_sample')
 
     def _get_note_id(self):
-        notes = self.get_notes()
+        notes = self.notes_view.get_notes()
         note_id = self.request.form.get('note_id', '')
         try:
             note_id = int(note_id)
@@ -90,15 +60,15 @@ class Sample2View(MultiModeView):
         return self._get_note_id() is not None
 
     def _process_add_form(self):
-        self.add_note(self.request.form.get('title'))
+        self.notes_view.add_note(self.request.form.get('title'))
 
     def _process_edit_form(self):
-        self.edit_note(
+        self.notes_view.edit_note(
             self._get_note_id(),
             self.request.form.get('title'))
 
     def _process_delete_form(self):
-        self.delete_note(self._get_note_id())
+        self.notes_view.delete_note(self._get_note_id())
 
 class Sample21View(Sample2View):
     """ A view that adds annotations on the portal.
