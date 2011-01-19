@@ -4,7 +4,5 @@
     xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="collective.multimodeview">
 
-  <five:registerPackage package="." initialize=".initialize" />
-  <i18n:registerTranslations directory="locales" />
-
+  <include package=".samples" />
 </configure>

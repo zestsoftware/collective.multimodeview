@@ -108,13 +108,11 @@ The second example will show how to manage some data with a view. We
 will add some annotations on the portal object (basically a simple
 list of string). The view will be able to list, add, edit and delete
 those notes.
+We consider we have a view called 'multimodeview_notes_sample', that
+provides an API to list, add, edit and delete notes (see
+samples/notes_view.py).
 
 As usual, we first define the view::
-
-  from zope.app.component.hooks import getSite
-  from zope.annotation.interfaces import IAnnotations
-  from persistent.dict import PersistentDict
-  from persistent.list import PersistentList
 
   class Sample2View(MultiModeView):
       """ A view that adds annotations on the portal.
@@ -125,22 +123,9 @@ As usual, we first define the view::
       default_mode = 'list'
       view_name = 'multimodeview_sample2'
 
-      def get_notes(self):
-          """ A method that returns the list of notes
-	  added to the portal.
-	  """
-
-      def add_note(self, title):
-          """ Adds a note to the list.
-	  """
-
-      def edit_note(self, note_id, title):
-          """ Change the title of a note
-	  """
-
-      def delete_note(self, note_id):
-          """ Delete a note from the list.
-	  """
+      @property
+      def notes_view(self):
+          return self.context.restrictedTraverse('@@multimodeview_notes_sample')
 
       def _get_note_id(self):
           """ Extracts the note_id from the form, cast it
@@ -164,15 +149,15 @@ As usual, we first define the view::
           return self._get_note_id() is not None
 
       def _process_add_form(self):
-          self.add_note(self.request.form.get('title'))
+          self.notes_view.add_note(self.request.form.get('title'))
 
       def _process_edit_form(self):
-          self.edit_note(
+          self.notes_view.edit_note(
               self._get_note_id(),
               self.request.form.get('title'))
 
       def _process_delete_form(self):
-          self.delete_note(self._get_note_id())
+          self.notes_view.delete_note(self._get_note_id())
 
 Like for the previous example, we have defined our list of modes, the
 default mode and the name of the view.
@@ -204,7 +189,7 @@ The second step is to define the template for this view. We first
 create the div (or whatever else) that is shown by default::
 
   <div tal:condition="view/is_list_mode">
-    <tal:block tal:define="notes view/get_notes;
+    <tal:block tal:define="notes view/notes_view/get_notes;
                            note_exists python: bool([n for n in notes if n])">
       <table class="listing"
              tal:condition="note_exists">
@@ -262,7 +247,7 @@ Now let's complete our template with the form to add a note::
   <div tal:condition="not: view/is_list_mode">
     <form name="manage_notes_form"
           method="POST"
-          tal:define="notes view/get_notes;
+          tal:define="notes view/notes_view/get_notes;
                       note_id view/_get_note_id;
                       note_text python: (note_id is not None) and notes[note_id] or '';"
           tal:attributes="action view/get_form_action">
@@ -409,7 +394,7 @@ does not change, we only update the form::
 
   <form name="manage_notes_form"
         method="POST"
-        tal:define="notes view/get_notes;
+        tal:define="notes view/notes_view/get_notes;
                     note_id view/_get_note_id;
                     note_text python: (note_id is not None) and notes[note_id] or '';"
         tal:attributes="action view/get_form_action">

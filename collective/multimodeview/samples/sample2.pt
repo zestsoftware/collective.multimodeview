@@ -10,7 +10,7 @@
     <div metal:fill-slot="main">
       <h1>Manage notes</h1>
       <div tal:condition="view/is_list_mode">
-        <tal:block tal:define="notes view/get_notes;
+        <tal:block tal:define="notes view/notes_view/get_notes;
                                note_exists python: bool([n for n in notes if n])">
           <table class="listing"
                  tal:condition="note_exists">
@@ -59,7 +59,7 @@
       <div tal:condition="not: view/is_list_mode">
         <form name="manage_notes_form"
               method="POST"
-              tal:define="notes view/get_notes;
+              tal:define="notes view/notes_view/get_notes;
                           note_id view/_get_note_id;
                           note_text python: (note_id is not None) and notes[note_id] or '';"
               tal:attributes="action view/get_form_action">
