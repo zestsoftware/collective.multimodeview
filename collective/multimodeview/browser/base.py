@@ -1,8 +1,12 @@
 import logging
 
+from zope.app.component.hooks import getSite
 from zope.i18n import translate
+from Acquisition import aq_inner
+
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.statusmessages.interfaces import IStatusMessage
 from Products.Five import BrowserView
 
 from collective.multimodeview import MultiModeViewMessageFactory as _
@@ -102,10 +106,8 @@ class MultiModeMixin(BrowserView):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-
         self.errors = {}
-        form = self.request.form
-        self.set_mode(form.get('mode'))
+        self.mode = self.default_mode
 
     def set_mode(self, mode):
         """ This method should always be used when switching
@@ -182,12 +184,15 @@ class MultiModeMixin(BrowserView):
     def portal_url(self):
         """ Shortcut to get the portal_url.
         """
-        return getToolByName(self.context, 'portal_url')()
+        return self.getSite().absolute_url()
+
+    def get_portal(self):
+        return getSite()
 
     def get_base_url(self):
         """ The url of the page.
         """
-        return '%s/%s' % (self.context.absolute_url(),
+        return '%s/%s' % (aq_inner(self.context.absolute_url()),
                           self.view_name)
 
     def get_form_action(self):
@@ -196,7 +201,8 @@ class MultiModeMixin(BrowserView):
     def get_mtool(self):
         """ Shortcut to get the portal_membership tool.
         """
-        return getToolByName(self.context, 'portal_membership')
+        return getToolByName(aq_inner(self.context),
+                             'portal_membership')
 
     def get_user(self):
         """ Shortcut to get the user currently logged-in.
@@ -207,11 +213,11 @@ class MultiModeMixin(BrowserView):
             return
         return mtool.getAuthenticatedMember()
 
-    def checkPermission(self, permission, context = None):
+    def check_permission(self, permission, context = None):
         """ Shortcut to check a permission. 
         """
         if context is None:
-            context = self.context
+            context = aq_inner(self.context)
         return self.get_mtool().checkPermission(permission,
                                                 context)
 
@@ -243,16 +249,14 @@ class MultiModeMixin(BrowserView):
             # in the worst case, it might raise an Unanthorized error.
             return True
 
-        mtool = self.get_mtool()
-        return mtool.checkPermission(self.view_permission)
+        return self.check_permission(self.view_permission)
 
-    def addPortalMessage(self, msg, type='info'):
+    def add_portal_message(self, msg, type='info'):
         """ Translates the message and displays it as a
         portal message.
         """
         translated = translate(msg, context=self.request)
-        self.context.plone_utils.addPortalMessage(translated,
-                                                  type)
+        IStatusMessage(self.request).addStatusMessage(translated, type)
 
     def class_for_field(self, field):
         if field in self.errors:
@@ -266,7 +270,6 @@ class MultiModeMixin(BrowserView):
         content in the form.
         """
         form = self.request.form
-        print fields
         new_form = {}
         for field in schema.fields():
             fieldname = field.getName()
@@ -295,12 +298,13 @@ class MultiModeMixin(BrowserView):
             if not field.validators:
                 continue
 
-            field_errors = field.validators(
-                form.get(field),
+            field_errors = field.validate(
+                form.get(fieldname),
+                context,
                 REQUEST=self.request)
 
-            if field_errors != True:
-                self.errors[field] = field_errors
+            if field_errors is not None:
+                self.errors[fieldname] = field_errors
 
     def check_form(self):
         """ This function is called when a form is submitted.
@@ -381,7 +385,7 @@ class MultiModeMixin(BrowserView):
 
             self.mode = cancel_mode or self.cancel_mode or self.default_mode
 
-            self.addPortalMessage(cancel_msg or self.cancel_msg)
+            self.add_portal_message(cancel_msg or self.cancel_msg)
             return
         
         if not 'form_submitted' in form or \
@@ -393,7 +397,7 @@ class MultiModeMixin(BrowserView):
             # Something wrong happened, like fields missing when
             # submitting the form.
             # This case should not happen normally.
-            self.addPortalMessage(self.form_error_msg, 'error')
+            self.add_portal_message(self.form_error_msg, 'error')
             logger.info('Check form returned False - please investigate.' + \
                         'The form was: \n%s' % form)
         else:
@@ -403,10 +407,10 @@ class MultiModeMixin(BrowserView):
                     if error_msg is not None:
                         self.error_msg = error_msg
 
-                self.addPortalMessage(self.error_msg,
+                self.add_portal_message(self.error_msg,
                                       'error')
                 logger.info(self.errors)
             else:
                 new_mode = self.process_form()
                 self.set_mode(new_mode)
-                self.addPortalMessage(self.success_msg)
+                self.add_portal_message(self.success_msg)
