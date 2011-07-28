@@ -9,4 +9,8 @@ class MultiModeView(MultiModeMixin):
     
     def __call__(self):
         self.on_call()
+        redirect_url = self.get_redirect_url()
+        if redirect_url:
+            return self.request.RESPONSE.redirect(redirect_url)
+
         return self.index()

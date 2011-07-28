@@ -42,6 +42,8 @@ class MultiModeMixin(BrowserView):
     # - cancel_label: label for the cancel button
     # - success_mode: the mode used when the form is successfully processed
     # - cancel_mode: the mode to switch when the user cancels.
+    # - redirect_url: the url where the user is redirected when this mode is used.
+    # - redirect_meth: the method used to generate the redirection url.
     modes = {}
 
     # The mode the view should switch to by default
@@ -355,6 +357,24 @@ class MultiModeMixin(BrowserView):
                 view = self.modes[self.mode].get('success_mode', view)
 
         return view
+
+    def get_redirect_url(self):
+        """ Returns the URL where the user should be redirected
+        if needed.
+        Returns None is nothing was specified.
+        """
+        if not isinstance(self.modes, dict):
+            return
+
+        redirect_url = self.modes.get(self.mode).get('redirect_url', None)
+        if redirect_url:
+            return redirect_url
+
+        redirect_meth_id = self.modes.get(self.mode).get('redirect_meth', '')
+        if redirect_meth_id:
+            redirect_meth = getattr(self, redirect_meth_id, None)
+            if redirect_meth:
+                return redirect_meth()
 
     def on_call(self):
         """ This is the method called by __call__ (for the views)
