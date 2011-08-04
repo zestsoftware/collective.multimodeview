@@ -44,6 +44,9 @@ class MultiModeMixin(BrowserView):
     # - cancel_mode: the mode to switch when the user cancels.
     # - redirect_url: the url where the user is redirected when this mode is used.
     # - redirect_meth: the method used to generate the redirection url.
+    # - auto_process: if set to True, the view will automatically run the _process_xxx_form
+    #   method when switching to this mode (as if the view was switched to this mode and
+    #   the form submitted)
     modes = {}
 
     # The mode the view should switch to by default
@@ -410,7 +413,14 @@ class MultiModeMixin(BrowserView):
         
         if not 'form_submitted' in form or \
           self.request.get('REQUEST_METHOD') != 'POST':
-            # We just call the page normally.
+            if isinstance(self.modes, dict) and \
+               self.modes.get(self.mode, {}).get('auto_process', False):
+                # We are in an auto-process mode.
+                new_mode = self.process_form()
+                self.set_mode(new_mode)
+                self.add_portal_message(self.success_msg)
+
+            # We just called the page normally.
             return
 
         if not self.check_form():

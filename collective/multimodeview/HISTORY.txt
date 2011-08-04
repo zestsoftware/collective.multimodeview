@@ -4,7 +4,12 @@ Changelog
 0.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- added auto_process to mode. When declaring this kind of mode, the
+  form is automatically processed when switching to this
+  mode. [vincent]
+
+- added possibility for modes to automatically redirect to another
+  page. [vincent]
 
 
 0.1 (2011-02-25)
