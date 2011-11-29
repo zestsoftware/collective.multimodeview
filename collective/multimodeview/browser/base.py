@@ -260,6 +260,9 @@ class MultiModeMixin(BrowserView):
         """ Translates the message and displays it as a
         portal message.
         """
+        if not msg:
+            return
+
         translated = translate(msg, context=self.request)
         IStatusMessage(self.request).addStatusMessage(translated, type)
 
@@ -369,11 +372,11 @@ class MultiModeMixin(BrowserView):
         if not isinstance(self.modes, dict):
             return
 
-        redirect_url = self.modes.get(self.mode).get('redirect_url', None)
+        redirect_url = self.modes.get(self.mode, {}).get('redirect_url', None)
         if redirect_url:
             return redirect_url
 
-        redirect_meth_id = self.modes.get(self.mode).get('redirect_meth', '')
+        redirect_meth_id = self.modes.get(self.mode, {}).get('redirect_meth', '')
         if redirect_meth_id:
             redirect_meth = getattr(self, redirect_meth_id, None)
             if redirect_meth:

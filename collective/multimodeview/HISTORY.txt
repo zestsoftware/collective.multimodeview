@@ -4,6 +4,10 @@ Changelog
 0.2 (unreleased)
 ----------------
 
+- the 'add_portal_message' now only displays a message if there is
+  one. It allows for example to set an empty success message for a
+  given mode. [vincent]
+
 - added auto_process to mode. When declaring this kind of mode, the
   form is automatically processed when switching to this
   mode. [vincent]
