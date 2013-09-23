@@ -1,17 +1,10 @@
 from setuptools import setup, find_packages
-import os
-
-version = open(os.path.join("collective",
-                            "multimodeview",
-                            "version.txt")).read().strip()
 
 setup(name='collective.multimodeview',
-      version=version,
+      version='0.2.dev0',
       description="Simple package to manage views with multiple modes.",
       long_description=(open("README.txt").read() + "\n" +
-                        open(os.path.join("collective",
-                                          "multimodeview",
-                                          "HISTORY.txt")).read()),
+                        open("CHANGES.rst").read()),
       # Get more strings from
       # http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
