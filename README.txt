@@ -12,6 +12,13 @@ This README will show three simple examples on how to use the
 product. All samples can be found in the sources in the samples
 directory.
 
+
+Compatibility
+=============
+
+This has been tested with Plone 3.3.5.
+
+
 Samples of views
 ================
 

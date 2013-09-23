@@ -9,7 +9,9 @@ setup(name='collective.multimodeview',
       # http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
           "Framework :: Plone",
+          "Framework :: Plone :: 3.3",
           "Programming Language :: Python",
+          "Programming Language :: Python :: 2.4",
           ],
       keywords='multimode view',
       author='Zest Software',
