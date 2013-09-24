@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.2 (unreleased)
+0.2 (2013-09-24)
 ----------------
 
 - the 'add_portal_message' now only displays a message if there is

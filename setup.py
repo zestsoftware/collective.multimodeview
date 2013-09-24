@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='collective.multimodeview',
-      version='0.2.dev0',
+      version='0.2',
       description="Simple package to manage views with multiple modes.",
       long_description=(open("README.txt").read() + "\n" +
                         open("CHANGES.rst").read()),
