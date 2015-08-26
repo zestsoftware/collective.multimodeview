@@ -13,10 +13,11 @@ from collective.multimodeview import MultiModeViewMessageFactory as _
 
 logger = logging.getLogger('collective.multimodeview')
 
+
 class MultiModeMixin(BrowserView):
     """ Do not use this view, use MultiModeView or MultiModeViewlet below.
     """
-    
+
     # The list of modes for this view.
     # You can define as a simple list: ['list', 'add', 'edit', 'delete']
     # for example.
@@ -84,29 +85,29 @@ class MultiModeMixin(BrowserView):
     # checkable (see check_form)
     form_error_msg = _(
         u'form_error_msg',
-        default=u'The form you filled has not ben sent properly, ' + \
+        default=u'The form you filled has not ben sent properly, ' +
         'please try again.'
-        )
+    )
 
     # Message displayed as a portal message when the form was successfully
     # processed.
     success_msg = _(
         u'success_msg',
         default=u'Changes have been saved.'
-        )
+    )
 
     # Message displayed as a portal message when the form was not valid.
     error_msg = _(
         u'error_msg',
-        default=u'Errors have been found in the form you sent. ' + \
+        default=u'Errors have been found in the form you sent. ' +
         'Please correct them.'
-        )
+    )
 
     # Message displayed when the user hit the cancel button.
     cancel_msg = _(
         u'cancel_msg',
         default=u'Changes have been cancelled.'
-        )
+    )
 
     def __init__(self, context, request):
         self.context = context
@@ -123,7 +124,7 @@ class MultiModeMixin(BrowserView):
             self.mode = mode
         else:
             self.mode = self.default_mode
-    
+
     def __getattr__(self, name):
         """ A bit of black magic here.
         You can access a few not-really defined
@@ -143,7 +144,7 @@ class MultiModeMixin(BrowserView):
 
         return super(MultiModeMixin, self).__getattribute__(name)
 
-    def make_link(self, mode, extra_params = None):
+    def make_link(self, mode, extra_params=None):
         """ Returns a link for the asked mode.
         If extra parameters are provided, they will
         be included as GET parameters too.
@@ -162,7 +163,7 @@ class MultiModeMixin(BrowserView):
 
         return base_url
 
-    def make_form_extras(self, options = None):
+    def make_form_extras(self, options=None):
         """ Returns a string meant to be used in the form.
         It provides a hidden field with the current mode
         and two submit buttons (validate/cancel).
@@ -176,12 +177,14 @@ class MultiModeMixin(BrowserView):
 
         # We need to define the template as an attribute of the view, if we don't
         # we can not render it.
-        self.fake_template = ZopeTwoPageTemplateFile('templates/form_extras.pt')
+        self.fake_template = ZopeTwoPageTemplateFile(
+            'templates/form_extras.pt')
 
         options['mode'] = self.mode
         if isinstance(self.modes, dict):
             options['submit_label'] = self.modes[self.mode].get('submit_label')
-            options['cancel_label'] = self.modes[self.mode].get('cancel_label', None)
+            options['cancel_label'] = self.modes[
+                self.mode].get('cancel_label', None)
 
         return self.fake_template(**options)
 
@@ -218,8 +221,8 @@ class MultiModeMixin(BrowserView):
             return
         return mtool.getAuthenticatedMember()
 
-    def check_permission(self, permission, context = None):
-        """ Shortcut to check a permission. 
+    def check_permission(self, permission, context=None):
+        """ Shortcut to check a permission.
         """
         if context is None:
             context = aq_inner(self.context)
@@ -233,11 +236,11 @@ class MultiModeMixin(BrowserView):
         """
         uid_cat = getToolByName(self.context,
                                 'uid_catalog')
-        brains = uid_cat(UID = uid)
+        brains = uid_cat(UID=uid)
         if not brains:
             logger.info('No object found for UID %s' % uid)
             return None
-        
+
         try:
             return brains[0].getObject()
         except:
@@ -292,7 +295,7 @@ class MultiModeMixin(BrowserView):
                 new_form[fieldname] = processed_value[0]
             else:
                 new_form[fieldname] = processed_value
-                
+
         return new_form
 
     def check_archetype_form(self, form, context, fields):
@@ -376,7 +379,9 @@ class MultiModeMixin(BrowserView):
         if redirect_url:
             return redirect_url
 
-        redirect_meth_id = self.modes.get(self.mode, {}).get('redirect_meth', '')
+        redirect_meth_id = self.modes.get(
+            self.mode, {}).get(
+            'redirect_meth', '')
         if redirect_meth_id:
             redirect_meth = getattr(self, redirect_meth_id, None)
             if redirect_meth:
@@ -397,14 +402,18 @@ class MultiModeMixin(BrowserView):
         if 'form_cancelled' in form:
             # User cancelled.
             if isinstance(self.modes, dict):
-                cancel_mode = self.modes.get(self.mode, {}).get('cancel_mode', None)
+                cancel_mode = self.modes.get(
+                    self.mode, {}).get(
+                    'cancel_mode', None)
                 if not cancel_mode in self.modes:
                     msg = "Tried to switch to mode '%s' after cancelling, " + \
                           "but this mode does not exist"
                     logger.info(msg % cancel_mode)
                     cancel_mode = None
 
-                cancel_msg = self.modes.get(self.mode, {}).get('cancel_msg', None)
+                cancel_msg = self.modes.get(
+                    self.mode, {}).get(
+                    'cancel_msg', None)
             else:
                 cancel_mode = None
                 cancel_msg = None
@@ -413,9 +422,9 @@ class MultiModeMixin(BrowserView):
 
             self.add_portal_message(cancel_msg or self.cancel_msg)
             return
-        
+
         if not 'form_submitted' in form or \
-          self.request.get('REQUEST_METHOD') != 'POST':
+                self.request.get('REQUEST_METHOD') != 'POST':
             if isinstance(self.modes, dict) and \
                self.modes.get(self.mode, {}).get('auto_process', False):
                 # We are in an auto-process mode.
@@ -431,7 +440,7 @@ class MultiModeMixin(BrowserView):
             # submitting the form.
             # This case should not happen normally.
             self.add_portal_message(self.form_error_msg, 'error')
-            logger.info('Check form returned False - please investigate.' + \
+            logger.info('Check form returned False - please investigate.' +
                         'The form was: \n%s' % form)
         else:
             if self.errors:
@@ -441,7 +450,7 @@ class MultiModeMixin(BrowserView):
                         self.error_msg = error_msg
 
                 self.add_portal_message(self.error_msg,
-                                      'error')
+                                        'error')
                 logger.info(self.errors)
             else:
                 new_mode = self.process_form()

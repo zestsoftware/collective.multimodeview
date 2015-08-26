@@ -1,5 +1,6 @@
 from collective.multimodeview.browser import MultiModeView
 
+
 class Sample1View(MultiModeView):
     """ A simple view with two modes.
     """
@@ -70,6 +71,7 @@ class Sample2View(MultiModeView):
     def _process_delete_form(self):
         self.notes_view.delete_note(self._get_note_id())
 
+
 class Sample21View(Sample2View):
     """ A view that adds annotations on the portal.
     """
@@ -78,12 +80,13 @@ class Sample21View(Sample2View):
                      'error_msg': 'Impossible to add a note: please correct the form',
                      'submit_label': 'Add note'},
              'edit': {'success_msg': 'The note has been edited',
-                     'submit_label': 'Edit note'},
+                      'submit_label': 'Edit note'},
              'delete': {'success_msg': 'The note has been deleted',
                         'submit_label': 'Delete note'}
              }
 
     view_name = 'multimodeview_sample21'
+
 
 class Sample3View(MultiModeView):
     modes = {'step1': {'submit_label': 'Go to step 2'},
@@ -122,6 +125,7 @@ class Sample3View(MultiModeView):
                    'step5': 'step4'}
         return mapping.get(self.mode)
 
+
 class Sample31View(MultiModeView):
     modes = {'step1': {'submit_label': 'Go to step 2',
                        'cancel_label': 'Cancel',
@@ -159,4 +163,3 @@ class Sample31View(MultiModeView):
 
     def _process_step4_form(self):
         pass
-

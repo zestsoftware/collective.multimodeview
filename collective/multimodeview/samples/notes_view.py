@@ -4,6 +4,7 @@ from zope.annotation.interfaces import IAnnotations
 from persistent.dict import PersistentDict
 from persistent.list import PersistentList
 
+
 class NotesView(BrowserView):
     def _get_metadata(self):
         anno_key = 'multimodeview_sample2'

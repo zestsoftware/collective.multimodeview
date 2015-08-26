@@ -1,5 +1,6 @@
 from collective.multimodeview.browser.base import MultiModeMixin
 
+
 class MultiModeViewlet(MultiModeMixin):
     """ This class should be inherited by viewlets using
     multi-mode.
@@ -50,7 +51,7 @@ class MultiModeViewlet(MultiModeMixin):
         return '%s#%s' % (self.get_base_url(),
                           self.widget_id)
 
-    def make_link(self, mode, extra_params = None):
+    def make_link(self, mode, extra_params=None):
         if extra_params is None:
             extra_params = {}
 
@@ -59,7 +60,7 @@ class MultiModeViewlet(MultiModeMixin):
 
         return '%s#%s' % (link, self.widget_id)
 
-    def make_form_extras(self, options = None):
+    def make_form_extras(self, options=None):
         if options is None:
             options = {}
 

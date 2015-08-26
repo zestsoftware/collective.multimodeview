@@ -47,7 +47,8 @@ class MultiModeAjaxMixin(object):
             return jq
 
         new_mode = self.process_form()
-        # We have to remove the 'form_submitted' to avoid doing the action twice.
+        # We have to remove the 'form_submitted' to avoid doing the action
+        # twice.
         del self.request.form['form_submitted']
         self.request.form['mode'] = new_mode
 
