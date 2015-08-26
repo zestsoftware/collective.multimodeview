@@ -1,10 +1,12 @@
 Changelog
 =========
 
+
 0.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Code cleanup.
+  [maurits]
 
 
 0.2 (2013-09-24)
