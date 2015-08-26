@@ -28,4 +28,4 @@
          tal:condition="options/cancel_label|nothing"
          tal:attributes="value options/cancel_label" />
 </tal:block>
-       
+
