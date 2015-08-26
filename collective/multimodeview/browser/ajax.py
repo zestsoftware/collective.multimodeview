@@ -1,5 +1,5 @@
-from zope.i18n import translate
 from jquery.pyproxy.plone import jquery, JQueryProxy
+
 
 class MultiModeAjaxMixin(object):
     """ This class is used when refreshing a multimodeview
