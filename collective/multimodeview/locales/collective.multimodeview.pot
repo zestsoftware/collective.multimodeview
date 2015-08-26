@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-01-05 10:47+0000\n"
+"POT-Creation-Date: 2015-08-26 21:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,22 +15,22 @@ msgstr ""
 "Domain: DOMAIN\n"
 
 #. Default: "Changes have been cancelled."
-#: ./browser/base.py:93
+#: ./browser/base.py:104
 msgid "cancel_msg"
 msgstr ""
 
 #. Default: "Errors have been found in the form you sent. Please correct them."
-#: ./browser/base.py:86
+#: ./browser/base.py:97
 msgid "error_msg"
 msgstr ""
 
 #. Default: "The form you filled has not ben sent properly, please try again."
-#: ./browser/base.py:72
+#: ./browser/base.py:83
 msgid "form_error_msg"
 msgstr ""
 
 #. Default: "Changes have been saved."
-#: ./browser/base.py:80
+#: ./browser/base.py:91
 msgid "success_msg"
 msgstr ""
 
