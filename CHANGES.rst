@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.3 (unreleased)
+0.3 (2015-08-27)
 ----------------
 
 - Code cleanup.
