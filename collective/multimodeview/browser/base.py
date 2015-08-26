@@ -1,15 +1,12 @@
-import logging
-
-from zope.app.component.hooks import getSite
-from zope.i18n import translate
 from Acquisition import aq_inner
-
 from Products.CMFCore.utils import getToolByName
+from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
-from Products.Five import BrowserView
-
 from collective.multimodeview import MultiModeViewMessageFactory as _
+from zope.app.component.hooks import getSite
+from zope.i18n import translate
+import logging
 
 logger = logging.getLogger('collective.multimodeview')
 
@@ -284,7 +281,7 @@ class MultiModeMixin(BrowserView):
         new_form = {}
         for field in schema.fields():
             fieldname = field.getName()
-            if not fieldname in fields:
+            if fieldname not in fields:
                 continue
 
             widget = field.widget
@@ -303,7 +300,7 @@ class MultiModeMixin(BrowserView):
         """
         for field in context.schema.fields():
             fieldname = field.getName()
-            if not fieldname in fields:
+            if fieldname not in fields:
                 continue
 
             if not field.validators:
@@ -405,7 +402,7 @@ class MultiModeMixin(BrowserView):
                 cancel_mode = self.modes.get(
                     self.mode, {}).get(
                     'cancel_mode', None)
-                if not cancel_mode in self.modes:
+                if cancel_mode not in self.modes:
                     msg = "Tried to switch to mode '%s' after cancelling, " + \
                           "but this mode does not exist"
                     logger.info(msg % cancel_mode)
@@ -423,7 +420,7 @@ class MultiModeMixin(BrowserView):
             self.add_portal_message(cancel_msg or self.cancel_msg)
             return
 
-        if not 'form_submitted' in form or \
+        if 'form_submitted' not in form or \
                 self.request.get('REQUEST_METHOD') != 'POST':
             if isinstance(self.modes, dict) and \
                self.modes.get(self.mode, {}).get('auto_process', False):
